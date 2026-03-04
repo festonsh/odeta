@@ -2,7 +2,6 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
-import { setAuthCookie as setAuthCookieDirect } from '../../../../lib/auth-cookies'
 
 const DEMO_USER_ID = 0
 
@@ -15,9 +14,12 @@ function isSuperAdminEmail(e: string) {
 
 // Vercel demo user: works without database (e.g. on Vercel with no DB)
 const VERCEL_DEMO_EMAIL = 'demo@odetaa.com'
-const VERCEL_DEMO_PASSWORD =
-  (typeof process.env.VERCEL_DEMO_PASSWORD === 'string' && process.env.VERCEL_DEMO_PASSWORD.trim()) ||
-  'VercelDemo123!'
+const DEFAULT_DEMO_PASSWORD = 'VercelDemo123!'
+function getVercelDemoPassword() {
+  const env = process.env.VERCEL_DEMO_PASSWORD
+  if (typeof env === 'string' && env.trim()) return env.trim()
+  return DEFAULT_DEMO_PASSWORD
+}
 function isVercelDemoEmail(e: string) {
   return e.trim().toLowerCase() === VERCEL_DEMO_EMAIL
 }
@@ -30,13 +32,22 @@ export async function POST(req: NextRequest) {
   }
 
   const { email, password } = body as { email: string; password: string }
+  const pwd = typeof password === 'string' ? password.trim() : ''
 
   // Vercel demo user: no DB required, works on Vercel out of the box
-  if (isVercelDemoEmail(email) && password === VERCEL_DEMO_PASSWORD) {
-    setAuthCookieDirect({ id: DEMO_USER_ID, role: 'MANAGEMENT' })
-    return NextResponse.json({
+  if (isVercelDemoEmail(email) && pwd === getVercelDemoPassword()) {
+    const res = NextResponse.json({
       user: { id: DEMO_USER_ID, name: 'Vercel Demo', email: VERCEL_DEMO_EMAIL, role: 'MANAGEMENT' }
     })
+    const cookieValue = JSON.stringify({ id: DEMO_USER_ID, role: 'MANAGEMENT' })
+    res.cookies.set('od_auth', cookieValue, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30
+    })
+    return res
   }
 
   const { prisma } = await import('../../../../lib/prisma')
