@@ -15,7 +15,9 @@ function isSuperAdminEmail(e: string) {
 
 // Vercel demo user: works without database (e.g. on Vercel with no DB)
 const VERCEL_DEMO_EMAIL = 'demo@odetaa.com'
-const VERCEL_DEMO_PASSWORD = process.env.VERCEL_DEMO_PASSWORD ?? 'VercelDemo123!'
+const VERCEL_DEMO_PASSWORD =
+  (typeof process.env.VERCEL_DEMO_PASSWORD === 'string' && process.env.VERCEL_DEMO_PASSWORD.trim()) ||
+  'VercelDemo123!'
 function isVercelDemoEmail(e: string) {
   return e.trim().toLowerCase() === VERCEL_DEMO_EMAIL
 }
