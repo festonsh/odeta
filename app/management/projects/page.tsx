@@ -1,8 +1,9 @@
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 import { prisma } from '../../../lib/prisma'
-import { requireManagementUser } from '../../../lib/auth'
 
 export default async function ProjectsPage() {
-  await requireManagementUser()
   const projects = await prisma.project.findMany({
     orderBy: { createdAt: 'desc' }
   })
