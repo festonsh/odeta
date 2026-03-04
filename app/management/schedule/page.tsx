@@ -160,9 +160,7 @@ export default function SchedulePage() {
     closeDialog()
   }
 
-  const formattedWeekStart = data?.weekStart
-    ? format(new Date(data.weekStart), 'MMM d, yyyy')
-    : ''
+  const formattedWeekStart = format(new Date(weekStart), 'MMM d, yyyy')
 
   return (
     <div className="page">
