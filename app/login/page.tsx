@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('odetacocaj27@gmail.com')
@@ -70,6 +70,14 @@ export default function LoginPage() {
         {error && <p className="login-error">{error}</p>}
       </form>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="login-page"><div className="login-card">Loading…</div></div>}>
+      <LoginForm />
+    </Suspense>
   )
 }
 
