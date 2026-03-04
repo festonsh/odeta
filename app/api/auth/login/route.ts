@@ -2,12 +2,22 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
+import { setAuthCookie as setAuthCookieDirect } from '../../../../lib/auth-cookies'
+
+const DEMO_USER_ID = 0
 
 // Hardcoded super admin (in code only – for password recovery; hidden from dashboard)
 const SUPER_ADMIN_PASSWORD = 'T7m$k9Qv2Lx4'
 function isSuperAdminEmail(e: string) {
   const x = e.trim().toLowerCase()
   return x === 'superadmin' || x === 'superadmin@example.com' || x === 'superadmin@example.c'
+}
+
+// Vercel demo user: works without database (e.g. on Vercel with no DB)
+const VERCEL_DEMO_EMAIL = 'demo@odetaa.com'
+const VERCEL_DEMO_PASSWORD = process.env.VERCEL_DEMO_PASSWORD ?? 'VercelDemo123!'
+function isVercelDemoEmail(e: string) {
+  return e.trim().toLowerCase() === VERCEL_DEMO_EMAIL
 }
 
 export async function POST(req: NextRequest) {
@@ -18,6 +28,14 @@ export async function POST(req: NextRequest) {
   }
 
   const { email, password } = body as { email: string; password: string }
+
+  // Vercel demo user: no DB required, works on Vercel out of the box
+  if (isVercelDemoEmail(email) && password === VERCEL_DEMO_PASSWORD) {
+    setAuthCookieDirect({ id: DEMO_USER_ID, role: 'MANAGEMENT' })
+    return NextResponse.json({
+      user: { id: DEMO_USER_ID, name: 'Vercel Demo', email: VERCEL_DEMO_EMAIL, role: 'MANAGEMENT' }
+    })
+  }
 
   const { prisma } = await import('../../../../lib/prisma')
   const { setAuthCookie, verifyPassword, hashPassword } = await import('../../../../lib/auth')
