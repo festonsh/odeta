@@ -1,6 +1,6 @@
 import './globals.css'
 import type { ReactNode } from 'react'
-import { AppHeader } from './components/AppHeader'
+import { DashboardShell } from './components/DashboardShell'
 
 export const metadata = {
   title: 'OD Scheduler',
@@ -11,8 +11,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className="app">
-        <AppHeader />
-        <main className="main">{children}</main>
+        <DashboardShell>{children}</DashboardShell>
       </body>
     </html>
   )

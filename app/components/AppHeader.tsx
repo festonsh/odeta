@@ -1,11 +1,13 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 type User = { id: number; name: string; role: string } | null
 
 export function AppHeader() {
+  const pathname = usePathname()
   const [user, setUser] = useState<User>(null)
   const [mounted, setMounted] = useState(false)
 
@@ -51,9 +53,9 @@ export function AppHeader() {
             </button>
           </form>
         </nav>
-      ) : (
+      ) : pathname !== '/login' ? (
         <Link href="/login">Log in</Link>
-      )}
+      ) : null}
     </header>
   )
 }

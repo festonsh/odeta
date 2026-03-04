@@ -42,14 +42,26 @@ export async function POST(req: NextRequest) {
   const { id, password, ...rest } = body
 
   if (id) {
+    const updateData: {
+      name: string
+      email: string
+      role: 'EMPLOYEE' | 'MANAGEMENT'
+      phone: string | null
+      trade: string | null
+      defaultLocation: string | null
+      passwordHash?: string
+    } = {
+      ...rest,
+      phone: rest.phone || null,
+      trade: rest.trade || null,
+      defaultLocation: rest.defaultLocation || null
+    }
+    if (password && password.length >= 6) {
+      updateData.passwordHash = await hashPassword(password)
+    }
     const employee = await prisma.user.update({
       where: { id },
-      data: {
-        ...rest,
-        phone: rest.phone || null,
-        trade: rest.trade || null,
-        defaultLocation: rest.defaultLocation || null
-      }
+      data: updateData
     })
     return NextResponse.json({ employee })
   }

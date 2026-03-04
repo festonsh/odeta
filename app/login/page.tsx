@@ -6,8 +6,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [email, setEmail] = useState('odetacocaj27@gmail.com')
-  const [password, setPassword] = useState('pAssW00rd.123')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -25,21 +25,22 @@ function LoginForm() {
         setError('Invalid email or password.')
         return
       }
-      const from = searchParams.get('from') || '/management/schedule'
-      router.push(from)
+      const data = await res.json()
+      const from = searchParams.get('from')
+      if (data.user?.role === 'MANAGEMENT') {
+        router.push(from || '/management/dashboard')
+      } else {
+        router.push(from || '/my-schedule')
+      }
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="login-page">
-      <form className="login-card" onSubmit={onSubmit}>
-        <h1>Sign in</h1>
-        <p className="login-hint">
-          Admin account:{' '}
-          <code>odetacocaj27@gmail.com / pAssW00rd.123</code>
-        </p>
+    <div className="login-page login-page--light">
+      <form className="login-card login-card--light" onSubmit={onSubmit}>
+        <h1 className="login-title">OD Scheduler</h1>
 
         <label>
           Email
@@ -47,6 +48,7 @@ function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
+            placeholder="you@example.com"
             autoComplete="email"
             required
           />
@@ -58,12 +60,13 @@ function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
+            placeholder=""
             autoComplete="current-password"
             required
           />
         </label>
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} className="btn-primary">
           {loading ? 'Signing in…' : 'Sign in'}
         </button>
 
@@ -75,7 +78,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="login-page"><div className="login-card">Loading…</div></div>}>
+    <Suspense fallback={<div className="login-page login-page--light"><div className="login-card login-card--light">Loading…</div></div>}>
       <LoginForm />
     </Suspense>
   )
