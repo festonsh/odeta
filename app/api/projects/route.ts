@@ -18,15 +18,16 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const { prisma, requireManagementUser } = await (async () => {
-    const [p, a] = await Promise.all([
-      import('../../../lib/prisma'),
-      import('../../../lib/auth')
-    ])
-    return { prisma: p.prisma, requireManagementUser: a.requireManagementUser }
-  })()
-  await requireManagementUser()
-  const body = (await req.json().catch(() => null)) as
+  try {
+    const { prisma, requireManagementUser } = await (async () => {
+      const [p, a] = await Promise.all([
+        import('../../../lib/prisma'),
+        import('../../../lib/auth')
+      ])
+      return { prisma: p.prisma, requireManagementUser: a.requireManagementUser }
+    })()
+    await requireManagementUser()
+    const body = (await req.json().catch(() => null)) as
     | {
         id?: number
         name: string
@@ -62,5 +63,9 @@ export async function POST(req: NextRequest) {
     : await prisma.project.create({ data })
 
   return NextResponse.json({ project })
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Failed to save project.'
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }
 

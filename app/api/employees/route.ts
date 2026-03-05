@@ -14,15 +14,16 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const { prisma, requireManagementUser, hashPassword } = await (async () => {
-    const [p, a] = await Promise.all([
-      import('../../../lib/prisma'),
-      import('../../../lib/auth')
-    ])
-    return { prisma: p.prisma, requireManagementUser: a.requireManagementUser, hashPassword: a.hashPassword }
-  })()
-  await requireManagementUser()
-  const body = (await req.json().catch(() => null)) as
+  try {
+    const { prisma, requireManagementUser, hashPassword } = await (async () => {
+      const [p, a] = await Promise.all([
+        import('../../../lib/prisma'),
+        import('../../../lib/auth')
+      ])
+      return { prisma: p.prisma, requireManagementUser: a.requireManagementUser, hashPassword: a.hashPassword }
+    })()
+    await requireManagementUser()
+    const body = (await req.json().catch(() => null)) as
     | {
         id?: number
         name: string
@@ -81,5 +82,9 @@ export async function POST(req: NextRequest) {
   })
 
   return NextResponse.json({ employee })
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Failed to save.'
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }
 
