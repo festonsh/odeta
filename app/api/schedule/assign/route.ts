@@ -1,11 +1,13 @@
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
+import { format } from 'date-fns'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
   const { prisma } = await import('../../../../lib/prisma')
   const { requireManagementUser } = await import('../../../../lib/auth')
+  const { sendAssignmentNotification } = await import('../../../../lib/email')
   await requireManagementUser()
   const body = (await req.json().catch(() => null)) as
     | {
@@ -70,6 +72,25 @@ export async function POST(req: NextRequest) {
         projectId: projectId ?? null,
         ...rest
       }
+    })
+  }
+
+  const assignmentWithRelations = await prisma.assignment.findUnique({
+    where: { id: assignment.id },
+    include: { user: { select: { email: true, name: true } }, project: true }
+  })
+  if (assignmentWithRelations?.user?.email) {
+    const projectName = assignmentWithRelations.project?.name ?? 'Assignment'
+    await sendAssignmentNotification({
+      to: assignmentWithRelations.user.email,
+      employeeName: assignmentWithRelations.user.name ?? 'there',
+      projectName,
+      date: format(day, 'EEE, MMM d, yyyy'),
+      startTime: assignmentWithRelations.startTime ?? rest.startTime ?? null,
+      endTime: assignmentWithRelations.endTime ?? rest.endTime ?? null,
+      workType: assignmentWithRelations.workType ?? rest.workType ?? null,
+      meetingPoint: assignmentWithRelations.meetingPoint ?? rest.meetingPoint ?? null,
+      notes: assignmentWithRelations.notes ?? rest.notes ?? null
     })
   }
 

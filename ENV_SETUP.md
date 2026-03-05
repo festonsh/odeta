@@ -47,3 +47,18 @@ Në Vercel, bëni **Redeploy** të deployment-it (Deployments → ... → Redepl
 ---
 
 **Shënim:** Lokalisht projekti tani pret një **Postgres** (përmes `DATABASE_URL`). Për dev lokal, shtoni në `.env` një `DATABASE_URL` që tregon te një Postgres lokal ose te një instance falas (Neon, Supabase, etj.).
+
+---
+
+## Email (opsional) – njoftim për assign
+
+Kur admini assignon një punonjës (një ditë ose bulk), mund të dërgohet email tek puntori. Nëse nuk konfiguroni SMTP, assignimet ruhen normalisht por nuk dërgohet email.
+
+Në **Vercel** (ose në `.env` lokal) shtoni:
+
+- `SMTP_HOST` – serveri SMTP (p.sh. `smtp.gmail.com`, `smtp.sendgrid.net`)
+- `SMTP_PORT` – zakonisht `587`
+- `SMTP_USER` dhe `SMTP_PASS` – kredencialet
+- `SMTP_FROM` (opsional) – adresa “From” (p.sh. `OD Scheduler <noreply@domeni juaj.com>`)
+
+Pa këto variabla, dërgoja e emailit nuk aktivizohet dhe nuk jep gabim.

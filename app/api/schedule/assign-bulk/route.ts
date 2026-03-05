@@ -1,8 +1,8 @@
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
+import { addDays, differenceInDays, format } from 'date-fns'
 import { NextRequest, NextResponse } from 'next/server'
-import { addDays, differenceInDays } from 'date-fns'
 
 type AssignmentPayload = {
   projectId: number | null
@@ -17,6 +17,7 @@ type AssignmentPayload = {
 export async function POST(req: NextRequest) {
   const { prisma } = await import('../../../../lib/prisma')
   const { requireManagementUser } = await import('../../../../lib/auth')
+  const { sendBulkAssignmentNotification } = await import('../../../../lib/email')
   await requireManagementUser()
 
   const body = (await req.json().catch(() => null)) as
@@ -121,6 +122,35 @@ export async function POST(req: NextRequest) {
         })
       }
       created.push({ userId: employeeId, date: day.toISOString().slice(0, 10) })
+    }
+  }
+
+  const uniqueUserIds = [...new Set(created.map((c) => c.userId))]
+  const project = body.projectId
+    ? await prisma.project.findUnique({ where: { id: body.projectId }, select: { name: true } })
+    : null
+  const projectName = project?.name ?? 'Assignment'
+  const startDateStr = format(start, 'EEE, MMM d, yyyy')
+  const endDateStr = format(end, 'EEE, MMM d, yyyy')
+
+  for (const userId of uniqueUserIds) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true, name: true }
+    })
+    if (user?.email) {
+      await sendBulkAssignmentNotification({
+        to: user.email,
+        employeeName: user.name ?? 'there',
+        projectName,
+        startDate: startDateStr,
+        endDate: endDateStr,
+        startTime: rest.startTime ?? null,
+        endTime: rest.endTime ?? null,
+        workType: rest.workType ?? null,
+        meetingPoint: rest.meetingPoint ?? null,
+        notes: rest.notes ?? null
+      })
     }
   }
 
