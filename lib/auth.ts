@@ -28,10 +28,10 @@ export async function hashPassword(password: string) {
 }
 
 export async function getCurrentUser() {
-  const raw = cookies().get(AUTH_COOKIE)?.value
-  if (!raw) return null
-
   try {
+    const raw = cookies().get(AUTH_COOKIE)?.value
+    if (!raw) return null
+
     const parsed = JSON.parse(raw) as { id: number; role?: string }
     if (parsed?.id === DEMO_USER_ID) return DEMO_USER
     if (!parsed?.id) return null
