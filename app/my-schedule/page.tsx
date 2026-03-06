@@ -110,11 +110,6 @@ export default function MySchedulePage() {
     return w
   }, [days])
 
-  const weekdaysOnly = useMemo(
-    () => days.filter(isWeekday),
-    [days]
-  )
-
   const isCurrentMonth = (dateKey: string) => {
     const d = parseLocalDate(dateKey)
     return d.getMonth() === currentMonth.getMonth()
@@ -153,7 +148,7 @@ export default function MySchedulePage() {
         <p>No schedule is available for this account.</p>
       ) : isMobile ? (
         <section className="my-schedule-list">
-          {weekdaysOnly.map((dateKey) => {
+          {days.map((dateKey) => {
             const assignments = sortAssignments(grid[dateKey] ?? [])
             const isAssigned = assignments.length > 0
             const isExpanded = expandedDay === dateKey
