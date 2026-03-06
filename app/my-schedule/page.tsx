@@ -52,6 +52,10 @@ export default function MySchedulePage() {
     () => format(currentMonth, 'yyyy-MM'),
     [currentMonth]
   )
+  const activeMonthKey = useMemo(
+    () => format(startOfMonth(new Date()), 'yyyy-MM'),
+    []
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -111,11 +115,13 @@ export default function MySchedulePage() {
   }, [days])
 
   const mobileDays = useMemo(() => {
+    if (monthKey !== activeMonthKey) return days
+
     const todayKey = toLocalDateKey(new Date())
     const pastDays = days.filter((dateKey) => dateKey < todayKey)
     const recentPastDays = new Set(pastDays.slice(-3))
     return days.filter((dateKey) => dateKey >= todayKey || recentPastDays.has(dateKey))
-  }, [days])
+  }, [activeMonthKey, days, monthKey])
 
   const isCurrentMonth = (dateKey: string) => {
     const d = parseLocalDate(dateKey)
