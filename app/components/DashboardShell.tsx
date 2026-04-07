@@ -43,52 +43,13 @@ export function DashboardShell({
     <div className={`dashboard-shell${sidebarOpen ? ' dashboard-shell--sidebar-open' : ''}`}>
       <aside className="dashboard-sidebar">
         <Link
-          href={user?.role === 'MANAGEMENT' ? '/management/dashboard' : '/my-schedule'}
+          href="/my-schedule"
           className="logo"
           onClick={() => setSidebarOpen(false)}
         >
           <BrandLogo />
         </Link>
         <nav>
-          {user?.role === 'MANAGEMENT' && (
-            <>
-              <Link
-                href="/management/dashboard"
-                className={pathname === '/management/dashboard' ? 'active' : undefined}
-                onClick={() => setSidebarOpen(false)}
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="/management/projects"
-                className={pathname === '/management/projects' ? 'active' : undefined}
-                onClick={() => setSidebarOpen(false)}
-              >
-                Projects
-              </Link>
-              <Link
-                href="/management/calendar"
-                className={pathname === '/management/calendar' ? 'active' : undefined}
-                onClick={() => setSidebarOpen(false)}
-              >
-                Project calendar
-              </Link>
-              <Link
-                href="/management/schedule"
-                className={pathname === '/management/schedule' ? 'active' : undefined}
-                onClick={() => setSidebarOpen(false)}
-              >
-                Assign schedule
-              </Link>
-              <Link
-                href="/management/employees"
-                className={pathname === '/management/employees' ? 'active' : undefined}
-                onClick={() => setSidebarOpen(false)}
-              >
-                Users
-              </Link>
-            </>
-          )}
           <Link
             href="/my-schedule"
             className={pathname === '/my-schedule' ? 'active' : undefined}
@@ -96,14 +57,21 @@ export function DashboardShell({
           >
             My schedule
           </Link>
+          {user?.role === 'MANAGEMENT' && (
+            <Link
+              href="/admin/time-entries"
+              className={pathname === '/admin/time-entries' ? 'active' : undefined}
+              onClick={() => setSidebarOpen(false)}
+            >
+              Time Entries
+            </Link>
+          )}
         </nav>
         <div className="sidebar-footer">
           {user && (
             <div className="sidebar-user-info">
               <p className="sidebar-user-name">{user.name}</p>
-              <p className="sidebar-user-position">
-                {user.role === 'MANAGEMENT' ? 'Admin' : 'Employee'}
-              </p>
+              <p className="sidebar-user-position">Employee</p>
             </div>
           )}
           <form

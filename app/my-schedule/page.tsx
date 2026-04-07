@@ -63,12 +63,14 @@ function formatElapsed(ms: number): string {
 }
 
 function formatDuration(ms: number): string {
-  const totalMin = Math.floor(ms / 60000)
-  const h = Math.floor(totalMin / 60)
-  const m = totalMin % 60
+  const totalSec = Math.floor(ms / 1000)
+  const h = Math.floor(totalSec / 3600)
+  const m = Math.floor((totalSec % 3600) / 60)
+  const s = totalSec % 60
   if (h > 0 && m > 0) return `${h}h ${m}m`
   if (h > 0) return `${h}h`
-  return `${m}m`
+  if (m > 0) return `${m}m ${s}s`
+  return `${s}s`
 }
 
 function mergeEntries(entries: EntryRecord[]): MergedGroup[] {

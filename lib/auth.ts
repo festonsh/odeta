@@ -11,7 +11,7 @@ const DEMO_USER = {
   id: DEMO_USER_ID,
   name: 'Vercel Demo',
   email: 'demo@odetaa.com',
-  role: 'MANAGEMENT' as const
+  role: 'EMPLOYEE' as const
 }
 
 export const setAuthCookie = setAuthCookieImpl
@@ -35,10 +35,12 @@ export async function getCurrentUser() {
     if (parsed?.id === DEMO_USER_ID) return DEMO_USER
     if (!parsed?.id) return null
     const { prisma } = await import('./prisma')
-    return prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: parsed.id },
       select: { id: true, name: true, email: true, role: true }
     })
+    if (!user) return null
+    return user
   } catch {
     return null
   }
