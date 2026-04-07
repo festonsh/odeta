@@ -833,6 +833,434 @@ textarea {
   color: #94a3b8;
 }
 
+/* ── Clock Widget (Zoho-style) ────────────────────────────── */
+.clock-widget {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: var(--am-surface);
+  border: 1px solid var(--am-border);
+  border-radius: 0.875rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.clock-widget--in {
+  border-left: 4px solid #22c55e;
+}
+
+.clock-widget--out {
+  border-left: 4px solid var(--am-border-strong);
+}
+
+/* Left: badge + name */
+.clock-widget-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 4rem;
+}
+
+.clock-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  border: 2px solid;
+}
+
+.clock-badge--in {
+  color: #16a34a;
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.clock-badge--out {
+  color: #dc2626;
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.clock-widget-name {
+  font-size: 0.78rem;
+  color: var(--am-text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Center: time display */
+.clock-widget-center {
+  flex: 1;
+  min-width: 160px;
+}
+
+.clock-widget-time {
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--am-text);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.clock-widget-detail {
+  font-size: 0.82rem;
+  color: var(--am-text-muted);
+  margin-top: 0.2rem;
+}
+
+.clock-widget-since {
+  font-size: 0.78rem;
+  color: #16a34a;
+  margin-top: 0.15rem;
+  font-weight: 500;
+}
+
+/* Right: action */
+.clock-widget-right {
+  display: flex;
+  align-items: center;
+}
+
+.clock-in-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.clock-select {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid var(--am-border);
+  border-radius: 0.45rem;
+  background: var(--am-surface);
+  color: var(--am-text);
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.clock-select:focus {
+  outline: 2px solid var(--am-accent);
+  outline-offset: 1px;
+}
+
+.clock-action-btn {
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.45rem;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+
+.clock-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.clock-action-btn--in {
+  background: #16a34a;
+  color: #fff;
+  border-color: #16a34a;
+}
+
+.clock-action-btn--in:hover:not(:disabled) {
+  background: #15803d;
+  border-color: #15803d;
+}
+
+.clock-action-btn--out {
+  background: #fff;
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+.clock-action-btn--out:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+.clock-action-btn--switch {
+  background: #fff;
+  color: var(--am-accent-hover);
+  border-color: var(--am-accent);
+}
+
+.clock-action-btn--switch:hover:not(:disabled) {
+  background: var(--am-accent-soft);
+}
+
+.clock-action-btn--cancel {
+  background: #fff;
+  color: var(--am-text-muted);
+  border-color: var(--am-border-strong);
+}
+
+.clock-action-btn--cancel:hover:not(:disabled) {
+  background: var(--am-surface-muted);
+}
+
+@media (max-width: 768px) {
+  .clock-widget {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+
+  .clock-widget-left {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .clock-widget-right {
+    width: 100%;
+  }
+
+  .clock-in-form {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .clock-select {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .clock-action-btn {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    text-align: center;
+  }
+}
+
+/* ── Today's Activity ────────────────────────────────────── */
+.clock-today {
+  background: var(--am-surface);
+  border: 1px solid var(--am-border);
+  border-radius: 0.875rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.clock-today-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.clock-today-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--am-text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.clock-today-total {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--am-accent-ink);
+  background: var(--am-accent-soft);
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+}
+
+.clock-today-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--am-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.clock-today-thead {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 2.5fr 0.7fr;
+  background: var(--am-surface-muted);
+  padding: 0.4rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--am-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--am-border);
+}
+
+.clock-today-row {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 2.5fr 0.7fr;
+  align-items: center;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--am-border);
+  gap: 0.5rem;
+}
+
+.clock-today-row:last-child {
+  border-bottom: none;
+}
+
+.clock-today-project {
+  font-weight: 600;
+  color: var(--am-text);
+}
+
+.clock-today-wtype {
+  color: var(--am-text-muted);
+}
+
+.clock-today-sessions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.clock-session-chip {
+  font-size: 0.78rem;
+  background: var(--am-surface-muted);
+  border: 1px solid var(--am-border);
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.4rem;
+  color: var(--am-text-muted);
+  white-space: nowrap;
+}
+
+.clock-session-chip em {
+  color: #16a34a;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.clock-today-dur {
+  font-weight: 700;
+  color: var(--am-accent-ink);
+  text-align: right;
+}
+
+/* ── History Calendar ────────────────────────────────────── */
+.clock-history {
+  background: var(--am-surface);
+  border: 1px solid var(--am-border);
+  border-radius: 0.875rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.clock-history-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--am-text);
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.clock-history-day {
+  border: 1px solid var(--am-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 0.65rem;
+}
+
+.clock-history-day:last-child {
+  margin-bottom: 0;
+}
+
+.clock-history-day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--am-surface-muted);
+  padding: 0.45rem 0.75rem;
+  border-bottom: 1px solid var(--am-border);
+}
+
+.clock-history-date {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--am-text);
+}
+
+.clock-history-day-total {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--am-accent-ink);
+  background: var(--am-accent-soft);
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+}
+
+.clock-history-entries {
+  display: flex;
+  flex-direction: column;
+}
+
+.clock-history-entry {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 2.5fr 0.7fr;
+  align-items: center;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.83rem;
+  border-bottom: 1px solid var(--am-border);
+  gap: 0.5rem;
+}
+
+.clock-history-entry:last-child {
+  border-bottom: none;
+}
+
+.clock-history-project {
+  font-weight: 600;
+  color: var(--am-text);
+}
+
+.clock-history-wtype {
+  color: var(--am-text-muted);
+}
+
+.clock-history-sessions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.clock-history-dur {
+  font-weight: 700;
+  color: var(--am-text-muted);
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .clock-today-thead {
+    display: none;
+  }
+
+  .clock-today-row,
+  .clock-history-entry {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 0.25rem 0.5rem;
+  }
+
+  .clock-today-sessions,
+  .clock-history-sessions {
+    grid-column: 1 / -1;
+  }
+
+  .clock-today-dur,
+  .clock-history-dur {
+    text-align: left;
+  }
+}
+
 .header {
   display: flex;
   justify-content: space-between;
